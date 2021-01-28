@@ -5,11 +5,12 @@ using System.Threading.Tasks;
 
 namespace TestePMESP.Services
 {
-    public interface IRepository
+    public interface IRepository<TEntity> where TEntity : class
     {
-        void Create<T>();
-        void Remove<T>();
-        List<T> FindAll<T>();
-        T FindById<T>(int id);
+        IQueryable<TEntity> All { get; }
+        TEntity Find(int id);
+        void Insert(params TEntity[] obj);
+        void Edit(params TEntity[] obj);
+        void Delete(params TEntity[] obj);
     }
 }
