@@ -5,9 +5,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
+using TestePMESP.Helpers;
 using TestePMESP.Models;
 using TestePMESP.Services;
+using TestePMESP.Views;
 
 namespace TestePMESP.Controllers
 {
@@ -78,6 +81,40 @@ namespace TestePMESP.Controllers
 
                 return BadRequest(e.Message);
             }
+        }
+
+        [HttpGet]
+        [Route("/importacao")]
+        public IEnumerable<ImportApi> GetImportacoes()
+        {
+            var listImports = new List<ImportApi>();
+            var calc = new CalcImport();
+
+            var imports = _repo
+                .All
+                .Include(i => i.Products)
+                .ToList();
+
+
+            for (int i = 0; i < imports.Count; i++)
+            {
+                var closerDate = calc.GetCloserDate(imports[i].Products);
+                var importId = imports[i].Id;
+                var importDate = imports[i].ImportDate;
+                var numItems = imports[i].Products.Count;
+                var totalImport = calc.GetTotalImport(imports[i].Products);
+
+                listImports.Add(new ImportApi()
+                {
+                    CloserDate = closerDate,
+                    ImportId = importId,
+                    ImportDate = importDate,
+                    NumItems = numItems,
+                    TotalImport = totalImport
+                });
+            }
+
+            return listImports;
         }
     }
 }
