@@ -120,7 +120,7 @@ namespace TestePMESP.Controllers
         public IEnumerable<ProductApi> GetImportacao(int id)
         {
             var products = new List<ProductApi>();
-            var import = _repo.Find(id);
+            var import = _repo.All.Include(i => i.Products).Where(i => i.Id == id).FirstOrDefault();
 
             if(import == null)
             {
