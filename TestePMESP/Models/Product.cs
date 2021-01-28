@@ -8,10 +8,13 @@ namespace TestePMESP.Models
 {
     public class Product
     {
+        public int Id { get; private set; }
         public DateTime DeliveryDate { get; private set; }
         public string ProductDescription { get; private set; }
         public int ProductQuantity { get; private set; }
         public double UnitaryPrice { get; private set; }
+        public int ImportId { get; private set; }
+        public Import Import { get; set; }
 
         public Product(DateTime deliveryDate, string productDescription, int productQuantity, double unitaryPrice)
         {
@@ -26,7 +29,7 @@ namespace TestePMESP.Models
                 throw new ArgumentException("A quantidade do produto deve ser maior que zero.", nameof(productQuantity));
             }
 
-            if(UnitaryPrice <= 0)
+            if(unitaryPrice <= 0)
             {
                 throw new ArgumentException("O preço não poder ser menor ou igual a zero.", nameof(unitaryPrice));
             }

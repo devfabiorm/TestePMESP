@@ -7,11 +7,12 @@ using TestePMESP.Models;
 
 namespace TestePMESP.Contexts
 {
-    public class ProductContext : DbContext
+    public class ApplicationContext : DbContext
     {
         public DbSet<Product> Products { get; set; }
 
-        public ProductContext(DbContextOptions<ProductContext> options)
+        public ApplicationContext(DbContextOptions<ApplicationContext> options)
+            : base(options)
         {
             this.Database.EnsureCreated();
         }
@@ -20,6 +21,7 @@ namespace TestePMESP.Contexts
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfiguration<Product>(new ProductConfiguration());
+            modelBuilder.ApplyConfiguration<Import>(new ImportConfiguration());
         }
     }
 }
