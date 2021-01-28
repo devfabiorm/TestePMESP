@@ -53,8 +53,6 @@ namespace TestePMESP.Controllers
                             {
                                 Product product = null;
 
-
-                                Console.WriteLine(package.Workbook.Worksheets[i].Cells[row, 1].Value.ToString());
                                 var deliveryDate = DateTime.Parse(package.Workbook.Worksheets[i].Cells[row, 1].Value.ToString());
                                 var productDescription = package.Workbook.Worksheets[i].Cells[row, 2].Value.ToString();
                                 var productQuantity = Int32.Parse(package.Workbook.Worksheets[i].Cells[row, 3].Value.ToString());
@@ -110,11 +108,38 @@ namespace TestePMESP.Controllers
                     ImportId = importId,
                     ImportDate = importDate,
                     NumItems = numItems,
-                    TotalImport = totalImport
+                    Total = totalImport
                 });
             }
 
             return listImports;
+        }
+
+        [HttpGet]
+        [Route("/importacao/{id?}")]
+        public IEnumerable<ProductApi> GetImportacao(int id)
+        {
+            var products = new List<ProductApi>();
+            var import = _repo.Find(id);
+
+            if(import == null)
+            {
+                return (IEnumerable<ProductApi>)BadRequest();
+            }
+
+            foreach (var item in import.Products)
+            {
+                products.Add(new ProductApi()
+                {
+                    DeliveryDate = item.DeliveryDate,
+                    ProductDescription = item.ProductDescription,
+                    ProductQuantity = item.ProductQuantity,
+                    UnitaryPrice = item.UnitaryPrice,
+                    Total = Math.Round(item.UnitaryPrice * item.ProductQuantity, 2)
+                });
+            }
+
+            return products;
         }
     }
 }
